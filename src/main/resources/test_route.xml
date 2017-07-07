@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	<camelContext id="camelContext1" xmlns="http://camel.apache.org/schema/spring">
+		<route id="_route1">
+			<!-- Note that the "from" endpoint here is "myself", i.e., TestRoute, 
+				the Switchyard service of which this route is the implementation. This route 
+				takes input from TestBean, but it isn't a _consumer_ of TestBean. Rather, 
+				at the Camel level it's a kind of free-floating consumer that will accept 
+				message bodies from anybody who cares to send one. -->
+			<from id="_from1" uri="switchyard://TestRoute" />
+			<log id="_log1" message="TestRoute - message received: ${body}" />
+			<!--  TestSendMessage is a service defined in switchyard.xml -->
+			<to uri="switchyard://TestSendMessage"/>
+		</route>
+	</camelContext>
+</beans>

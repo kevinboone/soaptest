@@ -1,0 +1,10 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:q0="urn:com.example.switchyard:soaptest:1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<soapenv:Body>
+		<q0:testIn>
+			<in1>Some data</in1>
+			<in2>some more data</in2>
+		</q0:testIn>
+	</soapenv:Body>
+</soapenv:Envelope>

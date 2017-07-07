@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sy:switchyard xmlns:bean="urn:switchyard-component-bean:config:2.0" xmlns:camel="urn:switchyard-component-camel:config:2.0" xmlns:jms="urn:switchyard-component-camel-jms:config:2.0" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:soap="urn:switchyard-component-soap:config:2.0" xmlns:sy="urn:switchyard-config:switchyard:2.0" xmlns:transform="urn:switchyard-config:transform:2.0" name="soaptest" targetNamespace="urn:com.example.switchyard:soaptest:1.0">
+  <sca:composite name="soaptest" targetNamespace="urn:com.example.switchyard:soaptest:1.0">
+    <sca:component name="TestBean">
+      <bean:implementation.bean class="com.example.switchyard.soaptest.TestBean"/>
+      <sca:service name="Test">
+        <sca:interface.java interface="com.example.switchyard.soaptest.Test"/>
+      </sca:service>
+      <sca:reference name="TestRoute">
+        <sca:interface.java interface="com.example.switchyard.soaptest.TestRoute"/>
+      </sca:reference>
+    </sca:component>
+    <sca:service name="TestPortType" promote="TestBean/Test">
+      <sca:interface.wsdl interface="Test.wsdl#wsdl.porttype(TestPortType)"/>
+      <soap:binding.soap name="soap1">
+        <soap:contextMapper soapHeadersType="VALUE"/>
+        <soap:wsdl>Test.wsdl</soap:wsdl>
+        <soap:contextPath>/soaptest</soap:contextPath>
+      </soap:binding.soap>
+    </sca:service>
+    <sca:component name="Test_route">
+      <camel:implementation.camel>
+        <camel:xml path="test_route.xml"/>
+      </camel:implementation.camel>
+      <sca:service name="TestRoute">
+        <sca:interface.java interface="com.example.switchyard.soaptest.TestRoute"/>
+      </sca:service>
+      <sca:reference name="TestSendMessage">
+        <sca:interface.java interface="com.example.switchyard.soaptest.TestSendMessage"/>
+      </sca:reference>
+    </sca:component>
+    <sca:reference name="TestSendMessage" multiplicity="0..1" promote="Test_route/TestSendMessage">
+      <sca:interface.java interface="com.example.switchyard.soaptest.TestSendMessage"/>
+      <jms:binding.jms name="jms1">
+        <jms:queue>TestQueue</jms:queue>
+        <jms:connectionFactory>#ConnectionFactory</jms:connectionFactory>
+      </jms:binding.jms>
+    </sca:reference>
+  </sca:composite>
+  <sy:transforms>
+    <transform:transform.jaxb from="java:com.example.switchyard.soaptest.TestOut" to="{urn:com.example.switchyard:soaptest:1.0}testOut" contextPath="com.example.switchyard.soaptest" enableAttachment="false" enableXOPPackage="true"/>
+    <transform:transform.jaxb from="{urn:com.example.switchyard:soaptest:1.0}testIn" to="java:com.example.switchyard.soaptest.TestIn" contextPath="com.example.switchyard.soaptest" enableAttachment="false" enableXOPPackage="true"/>
+  </sy:transforms>
+</sy:switchyard>
